@@ -1,0 +1,33 @@
+/*------------------------------------------------------------------------
+ *              COMPONENTS / F__EXAMPLECOMPONENT
+ *------------------------------------------------------------------------*/
+.F__exampleComponent {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.F__exampleComponent-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.F__exampleComponent-card {
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--cards-color);
+}
+
+.F__exampleComponent-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--img-radius);
+}
+
+@media (min-width: 768px) {
+  .F__exampleComponent-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "name": "salla_schema_reference",
+  "description": "Practical local reference for common Salla Twilight field shapes. Verify against the real Salla schema when available.",
+  "field_rules": [
+    "Use lowercase snake_case ids.",
+    "Put shared theme-wide controls in settings.",
+    "Put component-specific controls in components[].fields.",
+    "Use clear Arabic labels and sensible defaults."
+  ],
+  "types": {
+    "text": {
+      "purpose": "Short text such as title, subtitle, button text.",
+      "example": {
+        "id": "title",
+        "type": "text",
+        "label": "عنوان القسم",
+        "value": "عنوان تجريبي"
+      }
+    },
+    "textarea": {
+      "purpose": "Longer copy.",
+      "example": {
+        "id": "description",
+        "type": "textarea",
+        "label": "الوصف",
+        "value": "وصف مختصر للقسم"
+      }
+    },
+    "url": {
+      "purpose": "Links such as button URL.",
+      "example": {
+        "id": "button_url",
+        "type": "url",
+        "label": "رابط الزر",
+        "value": "/products"
+      }
+    },
+    "image": {
+      "purpose": "Single image.",
+      "example": {
+        "id": "image",
+        "type": "image",
+        "label": "الصورة"
+      }
+    },
+    "video": {
+      "purpose": "Single video URL or upload when supported by the active schema.",
+      "example": {
+        "id": "video_url",
+        "type": "text",
+        "label": "رابط الفيديو",
+        "value": ""
+      }
+    },
+    "color": {
+      "purpose": "Color value.",
+      "example": {
+        "id": "background_color",
+        "type": "color",
+        "label": "لون الخلفية",
+        "value": "#ffffff"
+      }
+    },
+    "switch": {
+      "purpose": "Boolean on/off setting.",
+      "example": {
+        "id": "has_container",
+        "type": "switch",
+        "label": "تفعيل الحاوية",
+        "value": true
+      }
+    },
+    "number": {
+      "purpose": "Plain numeric value.",
+      "example": {
+        "id": "autoplay_delay",
+        "type": "number",
+        "label": "زمن التشغيل التلقائي",
+        "value": 7000
+      }
+    },
+    "slider": {
+      "purpose": "Numeric value with min/max UI when supported.",
+      "example": {
+        "id": "section_height",
+        "type": "number",
+        "format": "slider",
+        "label": "ارتفاع القسم",
+        "min": 240,
+        "max": 900,
+        "step": 10,
+        "value": 520
+      }
+    },
+    "dropdown-list": {
+      "purpose": "Single choice from fixed options.",
+      "example": {
+        "id": "layout_style",
+        "type": "items",
+        "format": "dropdown-list",
+        "label": "شكل العرض",
+        "selected": [
+          {
+            "label": "شبكة",
+            "value": "grid"
+          }
+        ],
+        "options": [
+          {
+            "label": "شبكة",
+            "value": "grid"
+          },
+          {
+            "label": "سلايدر",
+            "value": "slider"
+          }
+        ]
+      }
+    },
+    "radio": {
+      "purpose": "Single choice when choices should be visible immediately.",
+      "example": {
+        "id": "content_align",
+        "type": "items",
+        "format": "radio",
+        "label": "محاذاة المحتوى",
+        "selected": [
+          {
+            "label": "وسط",
+            "value": "center"
+          }
+        ],
+        "options": [
+          {
+            "label": "يمين",
+            "value": "right"
+          },
+          {
+            "label": "وسط",
+            "value": "center"
+          },
+          {
+            "label": "يسار",
+            "value": "left"
+          }
+        ]
+      }
+    },
+    "collection": {
+      "purpose": "Repeatable cards or slides. Exact shape depends on the active Salla schema.",
+      "example": {
+        "id": "cards",
+        "type": "collection",
+        "label": "البطاقات",
+        "fields": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "العنوان"
+          },
+          {
+            "id": "image",
+            "type": "image",
+            "label": "الصورة"
+          },
+          {
+            "id": "url",
+            "type": "url",
+            "label": "الرابط"
+          }
+        ]
+      }
+    }
+  },
+  "global_setting_examples": {
+    "button_style": {
+      "id": "button_style",
+      "type": "items",
+      "format": "dropdown-list",
+      "label": "نمط الأزرار العام",
+      "selected": [
+        {
+          "label": "زر ممتلئ لون ثابت",
+          "value": "F__two"
+        }
+      ],
+      "options": [
+        {
+          "label": "زر مخطط قلب الألوان عند التحويم",
+          "value": "F__one"
+        },
+        {
+          "label": "زر ممتلئ لون ثابت",
+          "value": "F__two"
+        },
+        {
+          "label": "زر شبح بدون خلفية",
+          "value": "F__three"
+        },
+        {
+          "label": "زر كبسولة زوايا كاملة",
+          "value": "F__four"
+        }
+      ]
+    }
+  }
+}
