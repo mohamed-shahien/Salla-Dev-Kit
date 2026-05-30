@@ -1,0 +1,53 @@
+{% set c = component %}
+{% set secid = 'F_example_component-' ~ position %}
+{% set space = (c.notmrb is not defined or not c.notmrb) ? (theme.settings.get('sp_com_cu') ?? '') : '' %}
+{% set hascontainer = c.has_container|default(true) %}
+{% set title = c.title|default('') %}
+{% set subtitle = c.subtitle|default('') %}
+{% set cards = c.cards|default([]) %}
+{% set buttonstyle = theme.settings.get('button_style', 'F__two') %}
+
+<section id="{{ secid }}" class="s-block F__exampleComponent {{ space }}" data-button-style="{{ buttonstyle }}">
+    <div class="{{ hascontainer ? 'container' : '' }}">
+        {% if title or subtitle %}
+            {% include 'components.custom.titles' with {
+                title: title,
+                sub: subtitle,
+                more: c.more_enabled|default(false),
+                more_url: c.more_url|default('/products'),
+                more_alt: c.more_text|default('عرض الكل'),
+                jocer: true
+            } %}
+        {% endif %}
+
+        <div class="F__exampleComponent-grid">
+            {% for card in cards %}
+                <article class="F__exampleComponent-card">
+                    {% if card.image %}
+                        <img src="{{ card.image }}" alt="{{ card.title|default('') }}" loading="lazy">
+                    {% endif %}
+
+                    {% if card.title %}
+                        <h3>{{ card.title }}</h3>
+                    {% endif %}
+
+                    {% if card.description %}
+                        <p>{{ card.description }}</p>
+                    {% endif %}
+
+                    {% if card.url %}
+                        {% include 'components.custom.btn' with {
+                            text: card.button_text|default('عرض التفاصيل'),
+                            href: card.url,
+                            icon: true,
+                            color: '#fff',
+                            background_color: 'var(--color-primary)'
+                        } %}
+                    {% endif %}
+                </article>
+            {% else %}
+                <div class="F__exampleComponent-empty"></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

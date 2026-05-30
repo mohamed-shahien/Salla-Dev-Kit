@@ -1,8 +1,8 @@
-# Salla Forge
+# Salla-Dev-Kit
 
 Spec-driven workflow kit for professional Salla Twilight theme development.
 
-This repository root is the `salla-forge` project. Do not create a nested `salla-forge/` folder inside it.
+This repository root is the `salla-dev-kit` project. Do not create a nested `salla-dev-kit/` folder inside it.
 
 ## Core Workflow
 
@@ -66,17 +66,79 @@ Every command includes:
 - Stop/warn conditions
 - Example usage
 
-## Codex Usage
+## Install With npx
 
-Codex may not expose slash commands. Use the same workflow manually:
+After publishing to npm, install the workflow kit into any Salla theme project with:
 
-1. Read `AGENTS.md`.
-2. Read the relevant command file in `.claude/commands/` if it matches the task.
-3. Use `.salla/templates/` to produce artifacts for larger work.
-4. Read the relevant rules in `references/` before editing.
-5. Determine the active theme root before changing theme files.
-6. Do not manually edit generated `public/` assets.
-7. Finish with an implementation report or review summary.
+```bash
+npx salla-dev-kit init .
+```
+
+Initialize a new target folder:
+
+```bash
+npx salla-dev-kit init my-salla-theme
+```
+
+Choose agent support:
+
+```bash
+npx salla-dev-kit init . --agent codex
+npx salla-dev-kit init . --agent claude
+npx salla-dev-kit init . --agent both
+```
+
+Run diagnostics:
+
+```bash
+npx salla-dev-kit doctor
+```
+
+Local package test before publishing:
+
+```bash
+node bin/salla-dev-kit.js --help
+node bin/salla-dev-kit.js --version
+node bin/salla-dev-kit.js init ./tmp-test --agent both
+node bin/salla-dev-kit.js doctor ./tmp-test
+```
+
+## Using Salla-Dev-Kit with Codex
+
+Codex may not expose slash commands natively. In Codex, the `AGENTS.md` command router must interpret command text and execute the matching file from `commands/`.
+
+Examples:
+
+```text
+/salla.specify Build a luxury perfume Salla theme
+```
+
+```text
+salla.plan
+```
+
+```text
+run salla.tasks
+```
+
+```text
+execute salla.review
+```
+
+Codex execution rule:
+
+1. Match the command name to `commands/<name>.md`.
+2. Read the command file.
+3. Execute its workflow with the current project context.
+4. Create expected artifact paths when enough context exists.
+5. Ask only if blocked.
+6. Produce the command output directly.
+
+## Command Sources
+
+- `commands/` is the canonical command source shared by Codex and other agents.
+- `.claude/commands/` remains supported as the Claude Code adapter.
+- `kit/` is the distribution payload copied into target projects by the CLI.
 
 ## Repository Structure
 
@@ -93,6 +155,10 @@ Codex may not expose slash commands. Use the same workflow manually:
 |   `-- naming-conventions.md
 |-- .claude/
 |   `-- commands/
+|-- bin/
+|   `-- salla-dev-kit.js
+|-- commands/
+|-- kit/
 |-- references/
 |-- examples/
 |   `-- full-theme-workflow/
@@ -162,13 +228,13 @@ Key facts extracted from it:
 - Never invent a component `key` or `path`; new components must be created in Salla Partners first.
 - Global/shared controls belong in `settings`.
 - Component-instance controls belong in `components[].fields`.
-- New Salla Forge component Twig starts with `{% set c = component %}`.
+- New Salla-Dev-Kit component Twig starts with `{% set c = component %}`.
 - Do not write `<script>` or `<style>` inside component Twig.
 - Read settings with `theme.settings.get('id', fallback)`.
 - Read component fields with `c.field_id`.
 - Use `multilanguage: true` for merchant-facing and customer-facing text fields when supported.
 - Put component CSS in the correct source stylesheet with a component comment.
-- Put component JS in a separate service when needed and load it conditionally; prefer lazy import for new Salla Forge components.
+- Put component JS in a separate service when needed and load it conditionally; prefer lazy import for new Salla-Dev-Kit components.
 - Performance, security, accessibility, and SEO gates are required before delivery.
 
 ## Example Workflow

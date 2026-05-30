@@ -1,0 +1,32 @@
+{
+  "name": "salla-dev-kit",
+  "version": "0.1.0",
+  "description": "Spec-driven workflow kit for professional Salla theme development.",
+  "type": "module",
+  "bin": {
+    "salla-dev-kit": "./bin/salla-dev-kit.js",
+    "salla": "./bin/salla-dev-kit.js"
+  },
+  "files": [
+    "bin",
+    "kit",
+    "README.md",
+    "AGENTS.md",
+    "commands"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "doctor": "node bin/salla-dev-kit.js doctor ."
+  },
+  "keywords": [
+    "salla",
+    "twilight",
+    "theme",
+    "spec-kit",
+    "codex",
+    "claude"
+  ],
+  "license": "MIT"
+}
