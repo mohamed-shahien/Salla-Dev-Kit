@@ -10,14 +10,15 @@
   "files": [
     "bin",
     "kit",
-    "README.md",
-    "AGENTS.md",
-    "commands"
+    "README.md"
   ],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "build:kit": "node scripts/build-kit.mjs",
+    "dev": "npm run build:kit",
+    "prepack": "node scripts/build-kit.mjs",
     "doctor": "node bin/salla-dev-kit.js doctor ."
   },
   "keywords": [

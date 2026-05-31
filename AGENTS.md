@@ -1,262 +1,75 @@
 # AGENTS.md
 
-Mandatory instructions for any AI agent or developer working in this repository.
+Mandatory instructions for any AI agent or developer working in **this** repository.
+
+> This file governs development of the **Salla-Dev-Kit npm package itself**.
+> It is **not** the file that ships to users. The agent rules that get installed
+> into a user's Salla theme live in `templates/AGENTS.target.md` and are emitted
+> as `kit/AGENTS.md` by the build. Do not confuse the two.
 
 ## Project Identity
 
-- The current repository root is the `salla-dev-kit` project.
-- Do not create a nested `salla-dev-kit/` directory.
-- Create workflow kit files directly in this repository root.
-- Follow Salla Twilight theme structure; do not invent unsupported paths.
+- This repository is the `salla-dev-kit` npm package.
+- Do **not** create a nested `salla-dev-kit/` directory inside it.
+- It ships a spec-driven Salla theme workflow (commands, references, templates) into
+  target themes via `npx salla-dev-kit init`.
+- See `README.md` for the user-facing product and `CONTRIBUTING.md` for the full
+  development guide.
 
-## Core Workflow
+## Single Source Of Truth
 
-For substantial work, use this order:
+Edit only these committed sources:
 
-1. `specify`: write or read the spec using `.salla/templates/spec-template.md`.
-2. `clarify`: resolve ambiguity using `.salla/templates/clarify-template.md`.
-3. `plan`: map the work to files using `.salla/templates/plan-template.md`.
-4. `tasks`: split the plan using `.salla/templates/tasks-template.md`.
-5. `analyze`: inspect the current codebase using `.salla/templates/analyze-template.md`.
-6. `implement`: edit the correct source files only.
-7. `review`: perform code review using `.salla/templates/review-template.md`.
+- `.claude/commands/` — slash commands. Canonical superset: `salla.*` (shared) and
+  `salla-*` (legacy, Claude-only).
+- `.salla/` — workflow, templates, quality gates, checklists.
+- `references/` — Salla rules and `twilight.json` schema catalogs.
+- `examples/` — worked end-to-end example.
+- `templates/` — `gitignore.template`, `gitattributes.template`, and
+  `AGENTS.target.md` (the agent rules shipped into target themes).
+- `README.md`, `bin/`, `scripts/`.
 
-Small changes may compress these artifacts, but the reasoning order must stay intact.
+## Generated Artifacts — Never Edit By Hand
 
-## Claude Code And Codex
+These are produced by `scripts/build-kit.mjs` and are git-ignored:
 
-- In Claude Code, use the slash commands in `.claude/commands/`.
-- In Codex, use the Salla-Dev-Kit Command Router below.
-- When installed with `npx salla-dev-kit init`, the CLI injects only Salla-Dev-Kit workflow files into the target project.
-- Large tasks should produce real artifacts, not generic summaries.
-- Always identify the active theme root before editing theme files.
+- `commands/` — shared (Codex/CLI) command set generated from `.claude/commands/`
+  (drops the legacy `salla-*` aliases) plus a README.
+- `kit/` — the npm distribution payload, including `kit/AGENTS.md` built from
+  `templates/AGENTS.target.md`.
 
-## Salla-Dev-Kit Command Router
+After editing any source, run:
 
-`commands/` is the canonical shared command source. `.claude/commands/` is the Claude Code adapter.
-
-When the user writes any of these forms:
-
-- `/salla.plan`
-- `salla.plan`
-- `$salla.plan`
-- `run salla.plan`
-- `execute salla.plan`
-
-or the same forms for any Salla-Dev-Kit command, Codex must treat the text as a Salla-Dev-Kit command, not shell syntax.
-
-Supported command names:
-
-- `salla.specify`
-- `salla.clarify`
-- `salla.plan`
-- `salla.tasks`
-- `salla.analyze`
-- `salla.implement`
-- `salla.component`
-- `salla.schema`
-- `salla.refactor`
-- `salla.audit.performance`
-- `salla.audit.seo`
-- `salla.audit.accessibility`
-- `salla.review`
-
-Execution rule:
-
-1. Normalize the command text by removing an optional leading `/` or `$` and optional leading words like `run` or `execute`.
-2. Find the matching command file in `commands/`.
-3. Read the command file.
-4. Execute its workflow using the current project context.
-5. If required input files do not exist, create the expected artifact path first when enough context exists, or ask only if blocked.
-6. Do not explain command mechanics unless asked.
-7. Produce the command output directly.
-
-Examples:
-
-```text
-/salla.specify Build a luxury perfume Salla theme
-salla.plan
-run salla.tasks
-execute salla.review
+```bash
+npm run build:kit
 ```
 
-## Read Order
+`prepack` runs the build automatically, so `npm publish` / `npm pack` always ship a
+fresh `kit/`.
 
-Read these first when working:
+## Adding Or Changing A Command
 
-1. `AGENTS.md`
-2. `README.md`
-3. `commands/` when the user invokes a Salla-Dev-Kit command.
-4. `.salla/workflow.md`
-5. `.salla/templates/`
-6. `.salla/quality-gates.md`
-7. `references/salla-theme-constitution.md`
-8. `references/salla-twilight-rules.md`
-9. `references/salla-schema-rules.md`
-10. `references/salla-twig-rules.md`
-11. `references/salla-css-rules.md`
-12. `references/salla-js-rules.md`
-13. `references/salla-file-structure.md`
-14. `references/salla_schema_reference.json`
-15. `references/salla_schema_reference_full.json`
-16. `examples/` only when a concrete pattern is needed.
+1. Edit (or add) the file in `.claude/commands/`.
+   - Shared commands are `salla.<name>.md`; legacy Claude-only aliases are `salla-<name>.md`.
+2. Run `npm run build:kit`.
+3. If you added a shared command, list it in `templates/AGENTS.target.md` (command
+   router) and in the `README.md` commands table.
 
-## Theme Raed Baseline
+## Local Testing Before Publishing
 
-The attached Theme Raed project is nested at:
-
-```text
-theme-raed-master/theme-raed-master/
+```bash
+npm run build:kit
+npm pack --dry-run
+node bin/salla-dev-kit.js init ./tmp-test --agent both --with-examples
+node bin/salla-dev-kit.js doctor ./tmp-test
 ```
 
-This path exists on disk. Treat it as the Theme Raed root unless the user explicitly moves or chooses another root.
+`tmp-test/` is git-ignored. Verify the shipped `kit/AGENTS.md` describes a Salla theme
+target project, not this package.
 
-Important baseline facts:
+## Dogfooding
 
-- `public/` is generated build output. Do not edit it manually.
-- Source CSS is in `src/assets/styles/`.
-- `src/assets/styles/app.scss` is the main style entry.
-- Home component styles are usually in `src/assets/styles/04-components/home-blocks.scss`.
-- Home components are usually in `src/views/components/home/`.
-- `src/assets/js/home.js` uses `BasePage.initiateWhenReady(['index'])`.
-- `webpack.config.js` defines entries like `app`, `home`, `product`, and `checkout`.
-- Build scripts in `package.json`: `pnpm production`, `pnpm prod`, `pnpm development`, `pnpm watch`.
-
-## `twilight.json`
-
-`twilight.json` is the theme control surface. Edit only:
-
-- `settings`: global theme controls.
-- `components`: page component definitions.
-
-Do not create a component object manually. A new component must be created in Salla Partners first so Salla generates:
-
-- `key`
-- `path`
-- the linked Twig component file
-
-Only after that may you edit `title`, `icon`, `is_default`, and `fields`.
-
-## `settings` vs `fields`
-
-Use `settings` for shared theme-wide controls:
-
-- Global button style.
-- Global colors.
-- Global radius values.
-- Global spacing between components.
-- Global animation toggles.
-
-Read settings in Twig:
-
-```twig
-{{ theme.settings.get('button_style', 'F__two') }}
-{{ theme.settings.get('has_animation', true) }}
-```
-
-Use `fields` for controls that belong to one component instance:
-
-- Section title/subtitle.
-- Slider speed.
-- Component cards/images.
-- This section background.
-- This component container toggle.
-
-Read fields in Twig:
-
-```twig
-{{ c.title }}
-{{ c.autoplay_delay }}
-```
-
-## Twig Rules
-
-Every new Salla-Dev-Kit component Twig file must start with:
-
-```twig
-{% set c = component %}
-```
-
-Rules:
-
-- Use lowercase Twig variable names.
-- Do not write `<script>` inside component Twig.
-- Do not write `<style>` inside component Twig.
-- Use `c.field_id` for component fields.
-- Use `theme.settings.get('id', fallback)` for global settings.
-- Use `|default(...)` for optional values.
-- Preserve localized/multilingual values from Salla fields.
-- Do not hardcode customer-facing Arabic-only or English-only text unless it is an agreed fixed label.
-- Use helper includes only after confirming they exist in the theme.
-
-## CSS/SCSS Rules
-
-For Theme Raed home components, source styles usually belong in:
-
-```text
-src/assets/styles/04-components/home-blocks.scss
-```
-
-For other themes, inspect the local structure first.
-
-New Salla-Dev-Kit component CSS must include:
-
-```scss
-/*------------------------------------------------------------------------
- *              COMPONENTS / F__COMPONENT_NAME
- *------------------------------------------------------------------------*/
-```
-
-Rules:
-
-- Edit source SCSS/CSS, not generated `public/app.css`.
-- Scope selectors under the component root class.
-- Keep responsive behavior explicit.
-- Avoid hover-only content.
-
-## JavaScript Rules
-
-Do not write JavaScript inside Twig.
-
-For new Salla-Dev-Kit home component JS:
-
-1. Put component behavior in a separate service file.
-2. Load it conditionally from the page entry.
-3. Prefer lazy import when the project supports it or when it is intentionally introduced.
-
-Example:
-
-```javascript
-lazyImportWhenExists({
-  key: "F__component_name",
-  selector: ".F__componentName",
-  importer: () => import("./services/home/F__component_name"),
-  init: (mod, hosts) => mod.default(hosts, helpers),
-});
-```
-
-Theme Raed currently does not include `lazyImportWhenExists` by default. For small changes to existing Theme Raed behavior, follow the existing `BasePage` pattern. For new Salla-Dev-Kit behavior, introduce conditional loading deliberately and document it.
-
-## Quality Gates
-
-Before delivery:
-
-- No inline `<script>` or `<style>` in component Twig.
-- New Salla-Dev-Kit components start with `{% set c = component %}`.
-- Twig variables are lowercase.
-- `settings` are not duplicated inside component `fields`.
-- Fields have clear `id`, `type`, `label`, defaults, and localization where needed.
-- CSS has the required component comment and is scoped.
-- JS is conditional/lazy where appropriate.
-- Performance, security, accessibility, and SEO gates are checked.
-- No unrelated files are changed.
-
-## Delivery Report
-
-End every implementation with:
-
-- Files changed.
-- What changed.
-- Merchant/developer usage.
-- Validation performed.
-- Salla Partners dependencies or limitations.
+This repository keeps committed copies of `.claude/commands/`, `.salla/`, and
+`references/` so the kit's own slash commands work while developing it. When you run a
+`salla.*` command here, you are testing the kit — treat any generated theme artifacts
+as test output, not as repository deliverables.

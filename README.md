@@ -1,272 +1,188 @@
 # Salla-Dev-Kit
 
-Spec-driven workflow kit for professional Salla Twilight theme development.
+**Spec-driven workflow kit for professional Salla Twilight theme development.**
+عدة عمل احترافية لتطوير ثيمات سلة (Twilight) بمنهجية المواصفات أولاً.
 
-This repository root is the `salla-dev-kit` project. Do not create a nested `salla-dev-kit/` folder inside it.
+Salla-Dev-Kit drops a complete, opinionated workflow into any Salla theme so your
+AI agent (Claude Code or Codex) stops guessing and starts building like a senior
+Salla developer. It ships the rules, schema references, templates, and slash
+commands that turn a one-line request into a real spec, plan, implementation, and
+technical review.
 
-## Core Workflow
+It follows the same spec-driven philosophy as [spec-kit](https://github.com/github/spec-kit):
+you don't start with code — you go `specify → clarify → plan → tasks → analyze →
+implement → review`.
 
-Use this sequence for features, components, audits, and refactors:
+---
 
-1. `specify` - turn the request into a concrete specification.
-2. `clarify` - resolve blocking ambiguity and record assumptions.
-3. `plan` - map the spec to exact files, schema, Twig, CSS, JS, and validation.
-4. `tasks` - split the plan into small verifiable tasks.
-5. `analyze` - inspect the current codebase and confirm the active theme baseline.
-6. `implement` - edit the correct source files.
-7. `review` - perform a technical review before delivery.
+## Why use it
 
-Small edits can compress the artifacts, but the thinking order must remain the same.
+- **Saves real time on theme work.** The agent already knows Salla's `twilight.json`
+  rules, `settings` vs component `fields`, Twig conventions (`{% set c = component %}`,
+  `theme.settings.get(...)`), and the Theme Raed file layout — so you skip the
+  back-and-forth and the rookie mistakes.
+- **Bakes in performance & template quality.** Built-in rules cover lazy/conditional
+  JS, image dimensions, slider media, scoped CSS, and `public/` build output — the
+  exact issues that hurt theme performance and review scores.
+- **Produces professional components.** A single `/salla.component` command generates
+  a full contract: schema, Twig, scoped CSS, conditional JS, validation checklist, and
+  a delivery report.
+- **Enforces quality gates** for performance, SEO, accessibility, and security before
+  delivery.
 
-## Claude Code Usage
+---
 
-Claude Code commands live in `.claude/commands/`.
+## Quick start (30 seconds)
 
-Core commands:
-
-```text
-/salla.specify
-/salla.clarify
-/salla.plan
-/salla.tasks
-/salla.analyze
-/salla.implement
-/salla.review
-```
-
-Specialized commands:
-
-```text
-/salla.component
-/salla.schema
-/salla.refactor
-/salla.audit.performance
-/salla.audit.seo
-/salla.audit.accessibility
-```
-
-Legacy aliases are also present:
-
-```text
-/salla-audit
-/salla-component
-/salla-fields
-/salla-js
-/salla-review
-```
-
-Every command includes:
-
-- Purpose
-- When to use
-- Files to read first
-- Step-by-step workflow
-- Output format
-- Validation checklist
-- Stop/warn conditions
-- Example usage
-
-## Install With npx
-
-After publishing to npm, install the workflow kit into any Salla theme project with:
+Inside your Salla theme project:
 
 ```bash
 npx salla-dev-kit init .
 ```
 
-`init` only injects Salla-Dev-Kit workflow files. It does not scaffold a Salla theme and does not copy package files such as `bin/`, `kit/`, `package.json`, or this package `README.md` into the target project.
+That's it. Open the project in Claude Code or Codex and run your first command:
 
-Initialize a new target folder:
-
-```bash
-npx salla-dev-kit init my-salla-theme
+```text
+/salla.specify Build a luxury perfume home page with a hero slider and brand strip
 ```
 
-Choose agent support:
+Then walk the workflow: `/salla.plan` → `/salla.tasks` → `/salla.implement` → `/salla.review`.
 
-```bash
-npx salla-dev-kit init . --agent codex
-npx salla-dev-kit init . --agent claude
-npx salla-dev-kit init . --agent both
-```
-
-Install examples only when needed:
-
-```bash
-npx salla-dev-kit init . --with-examples
-```
-
-Run diagnostics:
+Verify the install at any time:
 
 ```bash
 npx salla-dev-kit doctor .
 ```
 
-Local package test before publishing:
+---
+
+## Install options
 
 ```bash
-node bin/salla-dev-kit.js --help
-node bin/salla-dev-kit.js --version
-node bin/salla-dev-kit.js init ./tmp-test --agent both
-node bin/salla-dev-kit.js init ./tmp-test --agent both --with-examples
-node bin/salla-dev-kit.js doctor ./tmp-test
+# Scaffold into a new folder
+npx salla-dev-kit init my-salla-theme
+
+# Choose which agent to set up (default: both)
+npx salla-dev-kit init . --agent claude
+npx salla-dev-kit init . --agent codex
+npx salla-dev-kit init . --agent both
+
+# Include the worked example workflow
+npx salla-dev-kit init . --with-examples
+
+# Overwrite existing kit files
+npx salla-dev-kit init . --force
 ```
 
-## Using Salla-Dev-Kit with Codex
+`init` only injects Salla-Dev-Kit workflow files (`AGENTS.md`, `.salla/`, `commands/`,
+`references/`, `.claude/commands/` when relevant, and `examples/` with `--with-examples`).
+It never scaffolds a Salla theme and never copies package internals into your project.
 
-Codex may not expose slash commands natively. In Codex, the `AGENTS.md` command router must interpret command text and execute the matching file from `commands/`.
+---
 
-Examples:
+## The workflow
+
+| Step | Command | What it does |
+|------|---------|--------------|
+| 1 | `specify` | Turn the request into a concrete specification |
+| 2 | `clarify` | Resolve blocking ambiguity, record safe assumptions |
+| 3 | `plan` | Map the spec to exact files, schema, Twig, CSS, JS |
+| 4 | `tasks` | Split the plan into small, verifiable tasks |
+| 5 | `analyze` | Inspect the current codebase and confirm the active theme baseline |
+| 6 | `implement` | Edit the correct source files only |
+| 7 | `review` | Technical review against Salla rules before delivery |
+
+Small edits can compress the artifacts, but the thinking order stays the same.
+
+---
+
+## Commands
+
+**Core**
 
 ```text
-/salla.specify Build a luxury perfume Salla theme
+/salla.specify   /salla.clarify   /salla.plan   /salla.tasks
+/salla.analyze   /salla.implement   /salla.review
 ```
 
+**Specialized**
+
 ```text
+/salla.component            Full component contract (schema + Twig + CSS + JS)
+/salla.schema               Design twilight.json settings & fields
+/salla.refactor             Refactor theme code while preserving behavior
+/salla.audit.performance    Performance audit
+/salla.audit.seo            SEO audit
+/salla.audit.accessibility  Accessibility audit
+```
+
+Every command file documents its purpose, when to use it, the files to read first,
+a step-by-step workflow, the output format, a validation checklist, stop/warn
+conditions, and an example.
+
+### Using it with Claude Code
+
+Slash commands live in `.claude/commands/` and are picked up automatically. Just type
+`/salla.specify`, `/salla.plan`, etc.
+
+### Using it with Codex
+
+Codex may not expose slash commands natively, so `AGENTS.md` includes a **command
+router**. Write the command in any of these forms and Codex treats it as a
+Salla-Dev-Kit command (not shell):
+
+```text
+/salla.plan
 salla.plan
-```
-
-```text
 run salla.tasks
-```
-
-```text
 execute salla.review
 ```
 
-Codex execution rule:
+---
 
-1. Match the command name to `commands/<name>.md`.
-2. Read the command file.
-3. Execute its workflow with the current project context.
-4. Create expected artifact paths when enough context exists.
-5. Ask only if blocked.
-6. Produce the command output directly.
-
-## Command Sources
-
-- `commands/` is the canonical command source shared by Codex and other agents.
-- `.claude/commands/` remains supported as the Claude Code adapter.
-- `kit/` is the distribution payload used by the CLI. `init` copies only workflow files into target projects: `AGENTS.md`, `.salla/`, `commands/`, `references/`, `.claude/commands/` when requested, and `examples/` only with `--with-examples`.
-
-## Repository Structure
+## What gets installed
 
 ```text
-.
-|-- README.md
-|-- AGENTS.md
-|-- .salla/
-|   |-- templates/
-|   |-- workflow.md
-|   |-- quality-gates.md
-|   |-- component-checklist.md
-|   |-- component-blueprint.md
-|   `-- naming-conventions.md
-|-- .claude/
-|   `-- commands/
-|-- bin/
-|   `-- salla-dev-kit.js
-|-- commands/
-|-- kit/
-|-- references/
-|-- examples/
-|   `-- full-theme-workflow/
-`-- theme-raed-master/
-    `-- theme-raed-master/
+your-theme/
+├── AGENTS.md                 # rules + Codex command router
+├── .salla/                   # workflow, templates, quality gates, checklists
+│   └── templates/
+├── .claude/commands/         # Claude Code slash commands (with --agent claude|both)
+├── commands/                 # shared command source (Codex / other agents)
+├── references/               # Salla rules + schema catalogs
+└── examples/                 # worked end-to-end example (with --with-examples)
 ```
 
-## Templates
+### References included
 
-Artifacts are generated from `.salla/templates/`:
+Twilight, schema, Twig, CSS, JS, performance, SEO, accessibility, security, and
+technical-review rules, plus anti-patterns, the Theme Raed file structure, the theme
+constitution, and two `twilight.json` schema catalogs
+(`salla_schema_reference.json` compact, `salla_schema_reference_full.json` expanded).
 
-- `spec-template.md`
-- `clarify-template.md`
-- `plan-template.md`
-- `tasks-template.md`
-- `analyze-template.md`
-- `audit-template.md`
-- `component-template.md`
-- `schema-template.md`
-- `review-template.md`
-- `implementation-report-template.md`
+---
 
-## References
+## Core Salla rules (enforced by the kit)
 
-Important references in `references/`:
-
-- Twilight rules: `salla-twilight-rules.md`
-- Schema rules: `salla-schema-rules.md`
-- Compact schema catalog: `salla_schema_reference.json`
-- Full schema catalog: `salla_schema_reference_full.json`
-- Twig rules: `salla-twig-rules.md`
-- CSS rules: `salla-css-rules.md`
-- JS rules: `salla-js-rules.md`
-- Performance rules: `salla-performance-rules.md`
-- SEO rules: `salla-seo-rules.md`
-- Accessibility rules: `salla-accessibility-rules.md`
-- Security rules: `salla-security-rules.md`
-- Technical review rules: `salla-technical-review-rules.md`
-- Anti-patterns: `salla-anti-patterns.md`
-- File structure and Theme Raed baseline: `salla-file-structure.md`
-
-## Theme Raed Baseline
-
-The current attached Theme Raed baseline is actually nested here:
-
-```text
-theme-raed-master/theme-raed-master/
-```
-
-That nested path is present on disk and is not just a documentation mistake.
-
-Key facts extracted from it:
-
-- Source CSS is under `src/assets/styles/`.
-- `src/assets/styles/app.scss` is the main SCSS entry.
-- Home component styles are in `src/assets/styles/04-components/home-blocks.scss`.
-- Home page JS is `src/assets/js/home.js`.
-- Existing home JS uses `BasePage.initiateWhenReady(['index'])`.
-- `webpack.config.js` builds entries such as `app`, `home`, `product`, and `checkout`.
-- `public/` is build output and should not be manually edited.
-- Existing component paths include `home.enhanced-slider`, `home.main-links`, and `home.brands`.
-
-## Strict Salla Rules
-
-- `twilight.json` is the theme control surface.
-- Only `settings` and `components` should be edited unless the current theme already proves another root-level key is valid.
-- Never invent a component `key` or `path`; new components must be created in Salla Partners first.
-- Global/shared controls belong in `settings`.
-- Component-instance controls belong in `components[].fields`.
-- New Salla-Dev-Kit component Twig starts with `{% set c = component %}`.
-- Do not write `<script>` or `<style>` inside component Twig.
-- Read settings with `theme.settings.get('id', fallback)`.
-- Read component fields with `c.field_id`.
-- Use `multilanguage: true` for merchant-facing and customer-facing text fields when supported.
-- Put component CSS in the correct source stylesheet with a component comment.
-- Put component JS in a separate service when needed and load it conditionally; prefer lazy import for new Salla-Dev-Kit components.
+- `twilight.json` is the theme control surface — edit only `settings` and `components`.
+- Never invent a component `key` or `path`; new components are created in Salla
+  Partners first.
+- Global controls live in `settings`; component-instance controls live in
+  `components[].fields`.
+- New component Twig starts with `{% set c = component %}`; no `<script>` or `<style>`
+  inside Twig.
+- Read settings with `theme.settings.get('id', fallback)` and fields with `c.field_id`.
+- Component CSS goes in the correct source stylesheet, scoped, with a component comment.
+- Component JS goes in a separate service, loaded conditionally / lazily.
 - Performance, security, accessibility, and SEO gates are required before delivery.
 
-## Example Workflow
+---
 
-See:
+## Contributing
 
-```text
-examples/full-theme-workflow/
-|-- spec.md
-|-- clarify.md
-|-- plan.md
-|-- tasks.md
-|-- analyze.md
-|-- implementation-report.md
-`-- review.md
-```
+Working on the kit itself? See [CONTRIBUTING.md](./CONTRIBUTING.md) for the
+single-source-of-truth layout, the `build:kit` step, and local testing.
 
-## Delivery Report
+## License
 
-Every delivery should include:
-
-- Files created and modified.
-- Schema changes in `settings` and `fields`.
-- Twig/CSS/JS changes.
-- Validation commands and results.
-- Salla Partners dependencies or limitations.
+MIT
