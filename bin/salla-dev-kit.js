@@ -14,7 +14,7 @@ const packageJsonPath = path.join(packageRoot, "package.json");
 const HELP = `Salla-Dev-Kit
 
 Usage:
-  salla-dev-kit init [target] [--agent codex|claude|both] [--force]
+  salla-dev-kit init [target] [--agent codex|claude|both] [--with-examples] [--force]
   salla-dev-kit doctor [target]
   salla-dev-kit --help
   salla-dev-kit --version
@@ -29,7 +29,8 @@ Examples:
   npx salla-dev-kit init . --agent codex
   npx salla-dev-kit init . --agent claude
   npx salla-dev-kit init . --agent both
-  npx salla-dev-kit doctor
+  npx salla-dev-kit init . --with-examples
+  npx salla-dev-kit doctor .
 `;
 
 function readPackageVersion() {
@@ -43,6 +44,7 @@ function parseArgs(argv) {
   const options = {
     agent: "both",
     force: false,
+    withExamples: false,
     target: "."
   };
   const positional = [];
@@ -62,6 +64,10 @@ function parseArgs(argv) {
     }
     if (arg === "--force" || arg === "-f") {
       options.force = true;
+      continue;
+    }
+    if (arg === "--with-examples") {
+      options.withExamples = true;
       continue;
     }
     positional.push(arg);
@@ -162,21 +168,21 @@ function initProject(target, rawOptions) {
   const summary = {
     target: targetRoot,
     agent: options.agent,
+    withExamples: options.withExamples,
     copied: [],
     skipped: [],
     warnings: []
   };
 
   copyRequiredKitPath("AGENTS.md", targetRoot, options, summary);
-  copyKitFileToTarget(".gitignore", ".gitignore", targetRoot, options, summary)
-    || copyKitFileToTarget("gitignore.template", ".gitignore", targetRoot, options, summary);
-  copyKitFileToTarget(".gitattributes", ".gitattributes", targetRoot, options, summary)
-    || copyKitFileToTarget("gitattributes.template", ".gitattributes", targetRoot, options, summary);
+  copyKitFileToTarget("gitignore.template", ".gitignore", targetRoot, options, summary);
+  copyKitFileToTarget("gitattributes.template", ".gitattributes", targetRoot, options, summary);
   copyRequiredKitPath(".salla", targetRoot, options, summary);
   copyRequiredKitPath("commands", targetRoot, options, summary);
+  copyRequiredKitPath("references", targetRoot, options, summary);
 
   if (options.agent === "claude" || options.agent === "both") {
-    copyRequiredKitPath(".claude", targetRoot, options, summary);
+    copyRequiredKitPath(path.join(".claude", "commands"), targetRoot, options, summary);
   }
 
   if (options.agent === "codex" || options.agent === "both") {
@@ -186,15 +192,9 @@ function initProject(target, rawOptions) {
     }
   }
 
-  copyDirSafe(path.join(kitRoot, "references"), path.join(targetRoot, "references"), {
-    ...options,
-    skipExistingDir: true
-  }, summary);
-
-  copyDirSafe(path.join(kitRoot, "examples"), path.join(targetRoot, "examples"), {
-    ...options,
-    skipExistingDir: true
-  }, summary);
+  if (options.withExamples) {
+    copyRequiredKitPath("examples", targetRoot, options, summary);
+  }
 
   printInitSummary(summary, options);
 }
@@ -207,6 +207,7 @@ function printInitSummary(summary, options) {
   console.log("Salla-Dev-Kit initialized.");
   console.log(`Target: ${summary.target}`);
   console.log(`Agent: ${summary.agent}`);
+  console.log(`Examples: ${summary.withExamples ? "yes" : "no"}`);
   console.log(`Force: ${options.force ? "yes" : "no"}`);
   console.log(`Copied: ${summary.copied.length}`);
   console.log(`Skipped: ${summary.skipped.length}`);

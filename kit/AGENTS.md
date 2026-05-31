@@ -27,7 +27,7 @@ Small changes may compress these artifacts, but the reasoning order must stay in
 
 - In Claude Code, use the slash commands in `.claude/commands/`.
 - In Codex, use the Salla-Dev-Kit Command Router below.
-- When installed with `npx salla-dev-kit init`, the CLI copies `kit/` content into the target project.
+- When installed with `npx salla-dev-kit init`, the CLI injects only Salla-Dev-Kit workflow files into the target project.
 - Large tasks should produce real artifacts, not generic summaries.
 - Always identify the active theme root before editing theme files.
 

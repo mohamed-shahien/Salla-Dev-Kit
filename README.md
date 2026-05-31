@@ -74,6 +74,8 @@ After publishing to npm, install the workflow kit into any Salla theme project w
 npx salla-dev-kit init .
 ```
 
+`init` only injects Salla-Dev-Kit workflow files. It does not scaffold a Salla theme and does not copy package files such as `bin/`, `kit/`, `package.json`, or this package `README.md` into the target project.
+
 Initialize a new target folder:
 
 ```bash
@@ -88,10 +90,16 @@ npx salla-dev-kit init . --agent claude
 npx salla-dev-kit init . --agent both
 ```
 
+Install examples only when needed:
+
+```bash
+npx salla-dev-kit init . --with-examples
+```
+
 Run diagnostics:
 
 ```bash
-npx salla-dev-kit doctor
+npx salla-dev-kit doctor .
 ```
 
 Local package test before publishing:
@@ -100,6 +108,7 @@ Local package test before publishing:
 node bin/salla-dev-kit.js --help
 node bin/salla-dev-kit.js --version
 node bin/salla-dev-kit.js init ./tmp-test --agent both
+node bin/salla-dev-kit.js init ./tmp-test --agent both --with-examples
 node bin/salla-dev-kit.js doctor ./tmp-test
 ```
 
@@ -138,7 +147,7 @@ Codex execution rule:
 
 - `commands/` is the canonical command source shared by Codex and other agents.
 - `.claude/commands/` remains supported as the Claude Code adapter.
-- `kit/` is the distribution payload copied into target projects by the CLI.
+- `kit/` is the distribution payload used by the CLI. `init` copies only workflow files into target projects: `AGENTS.md`, `.salla/`, `commands/`, `references/`, `.claude/commands/` when requested, and `examples/` only with `--with-examples`.
 
 ## Repository Structure
 
