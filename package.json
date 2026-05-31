@@ -1,6 +1,6 @@
 {
   "name": "salla-dev-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Spec-driven workflow kit for professional Salla theme development.",
   "type": "module",
   "bin": {
